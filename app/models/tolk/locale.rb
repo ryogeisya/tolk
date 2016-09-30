@@ -53,8 +53,25 @@ module Tolk
         all - [primary_locale]
       end
 
+      # dump_allは他に影響がないので、これを修正していく
+      # locale単位で吐き出しているので、これのto_hashで渡しているデータを変更する
+      # to_hashはlocaleに結びついている、phraseをすべてファイルに吐き出す
+      # dumpの引数でtoがあるので、それを利用する？
+      # exportはいじらずにdump_allをうまく編集すれば、最小限でできるはず
+      def dump_file_path_all
+        # to = self.locales_config_path, data = to_hash, exporter = Tolk::Export
+        secondary_locales.each do |locale|
+          locale_translations = locale.translations
+          Tolk::FilePath.all.each do |file_path|
+            file_path_traslations = locale_translations.where(file_path_id: file_path.id)
+            data = locale.to_hash(translations: file_path_traslations)
+            locale.dump(file_path.value, data)
+          end
+        end
+      end
+
       def dump_all(*args)
-        secondary_locales.each { |locale| locale.dump(*args) }
+       secondary_locales.each { |locale| locale.dump(*args) }
       end
 
       def dump_yaml(name, *args)
@@ -73,8 +90,8 @@ module Tolk
       end
     end
 
-    def dump(to = self.locales_config_path, exporter = Tolk::Export)
-      exporter.dump(name: name, data: to_hash, destination: to)
+    def dump(to = self.locales_config_path, data = to_hash, exporter = Tolk::Export)
+      exporter.dump(name: name, data: data, destination: to)
     end
 
     def has_updated_translations?
@@ -150,8 +167,9 @@ module Tolk
       result
     end
 
-    def to_hash
-      data = translations.includes(:phrase).references(:phrases).order(phrases.arel_table[:key]).
+    def to_hash(options={})
+      to_hash_translations = options[:translations] || translations
+      data = to_hash_translations.includes(:phrase).references(:phrases).order(phrases.arel_table[:key]).
         each_with_object({}) do |translation, locale|
           if translation.phrase.key.include?(".")
             locale.deep_merge!(unsquish(translation.phrase.key, translation.value))
