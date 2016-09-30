@@ -77,7 +77,7 @@ module Tolk
     end
 
     def translation_params
-      params.permit(translations: [:id, :phrase_id, :locale_id, :text])[:translations]
+      params.permit(translations: [:id, :phrase_id, :locale_id, :file_path_id, :text])[:translations]
     end
 
   end

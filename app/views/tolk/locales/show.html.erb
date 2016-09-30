@@ -28,6 +28,7 @@
               <%= hidden_field_tag :"translations[][id]", translation.id, :id => "#{translation.object_id}_id" %>
               <%= hidden_field_tag :"translations[][phrase_id]", phrase.id, :id => "#{translation.object_id}_phrase_id" %>
               <%= hidden_field_tag :"translations[][locale_id]", translation.locale_id, :id => "#{translation.object_id}_locale_id" %>
+              <%= hidden_field_tag :"translations[][file_path_id]", phrase.translations.primary.file_path_id, :id => "#{translation.object_id}_file_path_id" %>
               <%= text_area_tag :"translations[][text]", format_i18n_text_area_value(translation.text), :class => "locale", :id => "#{translation.object_id}_text" %>
             </td>
             <td class="actions">
