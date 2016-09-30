@@ -11,6 +11,7 @@ module Tolk
 
     validates_uniqueness_of :phrase_id, :scope => :locale_id
 
+    belongs_to :file_path, :class_name => 'Tolk::FilePath'
     belongs_to :phrase, :class_name => 'Tolk::Phrase'
     belongs_to :locale, :class_name => 'Tolk::Locale'
     validates_presence_of :locale_id
