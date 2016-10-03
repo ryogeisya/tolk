@@ -10,13 +10,13 @@ namespace :tolk do
     system 'rails g tolk:install'
 
     Rake::Task['db:migrate'].invoke
-    #Rake::Task['tolk:import'].invoke
+    Rake::Task['tolk:import'].invoke
   end
 
-  desc "Sync Tolk with the default locale's yml file"
-  task :sync => :environment do
-    Tolk::Locale.sync!
-  end
+#  desc "Sync Tolk with the default locale's yml file"
+#  task :sync => :environment do
+#    Tolk::Locale.sync!
+#  end
 
   desc "Generate yml files for all the locales defined in Tolk"
   task :dump_all => :environment do
