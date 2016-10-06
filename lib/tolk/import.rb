@@ -7,7 +7,7 @@ module Tolk
     module ClassMethods
 
       def import_primary
-        import_all_dir(self.primary_locale.name)
+        import_all_dir(self.primary_locale_name)
       end
 
       def import_all
@@ -45,7 +45,10 @@ module Tolk
           phrase = phrases.detect {|p| p.key == key} || Tolk::Phrase.create!(:key => key)
 
           if phrase
-            translation = locale.translations.new(:text => value, :phrase => phrase, :file_path_id => path_model.id)
+            translation = Tolk::Translation.where(phrase: phrase).where(locale_id: locale.id).first_or_create
+            translation.text = value
+            translation.phrase = phrase
+            translation.file_path_id = path_model.id
             if translation.save
               count = count + 1
             elsif translation.errors[:variables].present?
