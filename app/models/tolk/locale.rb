@@ -53,19 +53,13 @@ module Tolk
         all - [primary_locale]
       end
 
-      # dump_allは他に影響がないので、これを修正していく
-      # locale単位で吐き出しているので、これのto_hashで渡しているデータを変更する
-      # to_hashはlocaleに結びついている、phraseをすべてファイルに吐き出す
-      # dumpの引数でtoがあるので、それを利用する？
-      # exportはいじらずにdump_allをうまく編集すれば、最小限でできるはず
       def dump_file_path_all
-        # to = self.locales_config_path, data = to_hash, exporter = Tolk::Export
-        secondary_locales.each do |locale|
+        file_paths = Tolk::FilePath.all
+        locales = eager_load(:translations).where('tolk_locales.id != ?', primary_locale.id)
+        locales.each do |locale|
           locale_translations = locale.translations
-          Tolk::FilePath.all.each do |file_path|
-            file_path_traslations = locale_translations.where(file_path_id: file_path.id)
-            data = locale.to_hash(translations: file_path_traslations)
-            locale.dump(file_path.value, data)
+          file_paths.each do |file_path|
+            locale.dump(file_path.value, locale.to_hash(translations: locale_translations))
           end
         end
       end
