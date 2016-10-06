@@ -29,10 +29,15 @@ namespace :tolk do
     Tolk::Locale.dump_yaml(locale)
   end
 
+  desc "Imports primary locale yml files to Tolk"
+  task :import_primary => :environment do
+    Tolk::Locale.import_primary
+  end
+
   desc "Imports data all non default locale yml files to Tolk"
   task :import => :environment do
     #Rake::Task['tolk:sync'].invoke
-    Tolk::Locale.import_secondary_locales
+    Tolk::Locale.import_all
   end
 
   desc "Show all the keys potentially containing HTML values and no _html postfix"
