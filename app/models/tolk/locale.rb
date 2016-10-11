@@ -24,6 +24,12 @@ module Tolk
     cattr_accessor :primary_locale_name
     self.primary_locale_name = Tolk.config.primary_locale_name || I18n.default_locale.to_s
 
+    cattr_accessor :app_root_path
+    self.app_root_path = instance_eval(&Tolk.config.git_path)
+
+    cattr_accessor :webhook_key
+    self.webhook_key = Tolk.config.tocaro_webhook_key
+
     include Tolk::Sync
     include Tolk::Import
 

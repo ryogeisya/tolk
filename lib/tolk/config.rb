@@ -23,6 +23,10 @@ module Tolk
       # strip translation texts automatically
       attr_accessor :strip_texts
 
+      attr_accessor :git_path
+
+      attr_accessor :tocaro_webhook_key
+
       def reset
         @exclude_gems_token = false
 
@@ -31,6 +35,10 @@ module Tolk
         @block_xxx_en_yml_locale_files = true # keep compat with older versions
 
         @dump_path = Proc.new { "#{Rails.application.root}/config/locales" }
+
+        @git_path = Proc.new { "#{Rails.application.root}" }
+
+        @tocaro_webhook_key = nil
 
         @mapping = {
           'ar'    => 'Arabic',

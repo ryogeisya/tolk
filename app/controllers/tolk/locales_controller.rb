@@ -1,3 +1,6 @@
+require 'git'
+require 'tocaro_webhook'
+
 module Tolk
   class LocalesController < Tolk::ApplicationController
     before_action :find_locale, :only => [:show, :all, :update, :updated]
@@ -46,6 +49,21 @@ module Tolk
     def dump_all
       Tolk::Locale.dump_file_path_all
       I18n.reload!
+      redirect_to request.referrer
+    end
+
+    def release
+      # git
+      g = Git.open(Tolk::Locale.app_root_path)
+      g.add
+      #g.commit -m 'modify: change locale from cat tool'
+      #g.push
+      unless Tolk::Locale.webhook_key.nil?
+        # tocaro
+        webhook_sender = TocaroWebhook::Sender.new(Tolk::Locale.webhook_key)
+        webhook_sender.payload.add_attachment(title: "CAT tool", value: "change locale from CAT tool")
+        webhook_sender.exec(color: 'success')
+      end
       redirect_to request.referrer
     end
 

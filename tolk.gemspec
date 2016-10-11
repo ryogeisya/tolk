@@ -36,4 +36,7 @@ Gem::Specification.new do |s|
   s.files = Dir['README', 'MIT-LICENSE', 'config/**/*', 'init.rb', 'lib/**/*', 'app/**/*', 'public/tolk/**/*']
 
   s.require_path = 'lib'
+
+  s.add_dependency('git')
+  s.add_dependency('tocaro_webhook')
 end
