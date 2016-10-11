@@ -65,7 +65,8 @@ module Tolk
         locales.each do |locale|
           locale_translations = locale.translations
           file_paths.each do |file_path|
-            locale.dump(file_path.value, locale.to_hash(translations: locale_translations))
+            file_path_traslations = locale_translations.where(file_path_id: file_path.id)
+            locale.dump(file_path.value, locale.to_hash(translations: file_path_traslations))
           end
         end
       end
