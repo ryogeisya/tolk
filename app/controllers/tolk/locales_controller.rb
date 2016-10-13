@@ -56,8 +56,8 @@ module Tolk
       # git
       g = Git.open(Tolk::Locale.app_root_path)
       g.add
-      #g.commit -m 'modify: change locale from cat tool'
-      #g.push
+      g.commit -m 'modify: change locale from cat tool'
+      g.push
       unless Tolk::Locale.webhook_key.nil?
         # tocaro
         webhook_sender = TocaroWebhook::Sender.new(Tolk::Locale.webhook_key)
