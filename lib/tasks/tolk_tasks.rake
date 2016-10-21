@@ -36,8 +36,8 @@ namespace :tolk do
 
   desc "Imports data all non default locale yml files to Tolk"
   task :import => :environment do
-    #Rake::Task['tolk:sync'].invoke
     Tolk::Locale.import_all
+    Rake::Task['tolk:create_translate_results'].invoke
   end
 
   task :create_translate_results => :environment do
