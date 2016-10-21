@@ -19,6 +19,7 @@
       </tr>
       <% @phrases.each do |phrase| %>
         <% if phrase.translations.primary %>
+          <% next if phrase.translations.primary.blank? %>
           <tr>
             <td class="translation">
               <%= hidden_field_tag :"translations[][id]", phrase.translation.id %>

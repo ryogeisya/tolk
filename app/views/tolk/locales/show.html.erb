@@ -22,6 +22,7 @@
           <th class="key"><%= Tolk::Locale.primary_language_name -%></th>
         </tr>
         <% @phrases.each do |phrase| %>
+          <% next if phrase.translations.primary.blank? %>
           <tr>
             <% translation = Tolk::Translation.new(:locale => @locale, :phrase => phrase) %>
             <td class="translation">

@@ -18,6 +18,7 @@
           <th class="key"><%= Tolk::Locale.primary_language_name -%></th>
         </tr>
         <% @phrases.each do |phrase| %>
+          <% next if phrase.translations.primary.blank? %>
 
           <% if translation = phrase.translations.where(locale_id: @locale.id).first || Tolk::Translation.new(:locale => @locale, :phrase => phrase) %>
             <tr>
