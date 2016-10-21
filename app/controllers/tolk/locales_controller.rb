@@ -3,7 +3,7 @@ require 'tocaro_webhook'
 
 module Tolk
   class LocalesController < Tolk::ApplicationController
-    before_action :find_locale, :only => [:show, :all, :update, :updated]
+    before_action :find_locale, :only => [:show, :all, :update, :updated, :dump_all]
     before_action :ensure_no_primary_locale, :only => [:all, :update, :show, :updated]
 
     def index
@@ -47,7 +47,11 @@ module Tolk
     end
 
     def dump_all
-      Tolk::Locale.dump_file_path_all
+      if @locale
+        @locale.dump
+      else
+        Tolk::Locale.dump_all
+      end
       I18n.reload!
       redirect_to request.referrer
     end
@@ -56,7 +60,7 @@ module Tolk
       # git
       g = Git.open(Tolk::Locale.app_root_path)
       g.add
-      g.commit -m 'modify: change locale from cat tool'
+      g.commit 'modify: change locale from cat tool'
       g.push
       unless Tolk::Locale.webhook_key.nil?
         # tocaro
