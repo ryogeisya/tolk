@@ -45,7 +45,7 @@ module Tolk
           phrase = phrases.detect {|p| p.key == key} || Tolk::Phrase.create!(:key => key)
 
           if phrase
-            translation = Tolk::Translation.where(phrase: phrase).where(locale_id: locale.id).first_or_create
+            translation = Tolk::Translation.where(phrase: phrase, locale_id: locale.id).first_or_initialize
             translation.text = value
             translation.phrase = phrase
             translation.file_path_id = path_model.id
@@ -60,6 +60,15 @@ module Tolk
         end
 
         puts "[INFO] Imported #{count} keys from #{locale_name}.yml"
+      end
+
+      def save_translate_results(locale_id, file_path_id)
+        translate_result = Tolk::TranslateResult.where(locale_id: locale_id, file_path_id: file_path_id).first_or_initialize
+
+        puts "[INFO] Create #{translate_result.file_path.value}"
+        file_path_traslations = translate_result.locale.translations.where(file_path_id: file_path_id)
+        translate_result.json = translate_result.locale.to_hash(translations: file_path_traslations).to_json
+        translate_result.save!
       end
 
     end

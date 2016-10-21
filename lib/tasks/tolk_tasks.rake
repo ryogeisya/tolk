@@ -40,6 +40,17 @@ namespace :tolk do
     Tolk::Locale.import_all
   end
 
+  task :create_translate_results => :environment do
+    locales = Tolk::Locale.eager_load(:translations).where('tolk_locales.id != ?', Tolk::Locale.primary_locale.id)
+    file_paths = Tolk::FilePath.all
+
+    locales.each do |locale|
+      file_paths.each do |file_path|
+        Tolk::Locale.save_translate_results(locale.id, file_path.id)
+      end
+    end
+  end
+
   desc "Show all the keys potentially containing HTML values and no _html postfix"
   task :html_keys => :environment do
     bad_translations = Tolk::Locale.primary_locale.translations_with_html

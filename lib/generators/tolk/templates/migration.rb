@@ -35,8 +35,8 @@ class CreateTolkTables < ActiveRecord::Migration
 
     create_table "tolk_translate_results", :force => true do |t|
       t.integer  "locale_id"
-      t.integer  "phrase_id"
-      t.text     "json"
+      t.integer  "file_path_id"
+      t.text     "json", limit: 16777215
       t.datetime "created_at"
       t.datetime "updated_at"
     end
