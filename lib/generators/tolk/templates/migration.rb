@@ -33,6 +33,13 @@ class CreateTolkTables < ActiveRecord::Migration
       t.datetime "updated_at"
     end
 
+    create_table "tolk_translate_results", :force => true do |t|
+      t.integer  "locale_id"
+      t.integer  "phrase_id"
+      t.text     "json"
+      t.datetime "created_at"
+      t.datetime "updated_at"
+    end
   end
 
   def self.down
@@ -42,6 +49,7 @@ class CreateTolkTables < ActiveRecord::Migration
     drop_table :tolk_translations
     drop_table :tolk_phrases
     drop_table :tolk_locales
-    drop_table :tolk_file_path
+    drop_table :tolk_file_paths
+    drop_table :tolk_translate_results
   end
 end
