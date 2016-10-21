@@ -29,6 +29,8 @@ module Tolk
     def update
       @locale.translations_attributes = translation_params
       @locale.save
+      file_path_ids = translation_params.map { |p| p['file_path_id'] }.uniq
+      file_path_ids.each { |file_path_id| Tolk::Locale.save_translate_results(@locale.id, file_path_id) }
       redirect_to request.referrer
     end
 
