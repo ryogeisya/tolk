@@ -30,7 +30,12 @@ module Tolk
       @locale.translations_attributes = translation_params
       @locale.save
       file_path_ids = translation_params.map { |p| p['file_path_id'] }.uniq
-      file_path_ids.each { |file_path_id| Tolk::Locale.save_translate_results(@locale.id, file_path_id) }
+      file_path_ids.each do |file_path_id|
+        Tolk::Locale.save_translate_results(@locale.id, file_path_id)
+        # activerecordのメモリを解放する http://qiita.com/dainghiavotinh/items/8158213207b257670ff3
+        ObjectSpace.each_object(ActiveRecord::Relation).each(&:reset)
+        GC.start
+      end
       redirect_to request.referrer
     end
 
@@ -93,7 +98,7 @@ module Tolk
     private
 
     def find_locale
-      @locale = Tolk::Locale.where('UPPER(name) = UPPER(?)', params[:id] || params[:tolk_locale]).first!
+      @locale ||= Tolk::Locale.where('UPPER(name) = UPPER(?)', params[:id] || params[:tolk_locale]).first!
     end
 
     def locale_params
