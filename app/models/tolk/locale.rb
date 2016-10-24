@@ -167,7 +167,8 @@ module Tolk
 
     def to_hash(options={})
       to_hash_translations = options[:translations] || translations
-      data = to_hash_translations.includes(:phrase).references(:phrases).order(phrases.arel_table[:key]).
+      # TODO: includesでやっていたが、メモリ消費が激しいのでjsoinsに修正
+      data = to_hash_translations.joins(:phrase).references(:phrases).order(phrases.arel_table[:key]).
         each_with_object({}) do |translation, locale|
           if translation.phrase.key.include?(".")
             locale.deep_merge!(unsquish(translation.phrase.key, translation.value))
