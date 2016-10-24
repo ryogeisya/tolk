@@ -13,7 +13,7 @@ module Tolk
     def show
       respond_to do |format|
         format.html do
-          @phrases = @locale.phrases_without_translation(params[pagination_param])
+          @phrases = @locale.phrases_without_translation(params[pagination_param]).per(15)
         end
 
         format.atom { @phrases = @locale.phrases_without_translation(params[pagination_param]).per(50) }
