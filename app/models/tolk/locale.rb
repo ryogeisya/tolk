@@ -61,14 +61,9 @@ module Tolk
       end
 
       def dump_file_path_all
-        file_paths = Tolk::FilePath.all
-        locales = eager_load(:translations).where('tolk_locales.id != ?', primary_locale.id)
-        locales.each do |locale|
-          locale_translations = locale.translations
-          file_paths.each do |file_path|
-            file_path_traslations = locale_translations.where(file_path_id: file_path.id)
-            locale.dump(file_path.value, locale.to_hash(translations: file_path_traslations))
-          end
+        transelate_results = Tolk::TranslateResult.all
+        transelate_results.each do |result|
+          result.dump
         end
       end
 

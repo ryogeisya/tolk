@@ -67,6 +67,8 @@ module Tolk
 
         puts "[INFO] Create #{translate_result.file_path.value}"
         file_path_traslations = translate_result.locale.translations.where(file_path_id: file_path_id)
+        # TODO: valueの:yearなどを文字列にしたときに、yearになってしまう
+        # 翻訳時に':year'などとしないといけない
         translate_result.json = translate_result.locale.to_hash(translations: file_path_traslations).to_json
         translate_result.save!
       end

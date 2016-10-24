@@ -3,7 +3,7 @@ require 'tocaro_webhook'
 
 module Tolk
   class LocalesController < Tolk::ApplicationController
-    before_action :find_locale, :only => [:show, :all, :update, :updated, :dump_all]
+    before_action :find_locale, :only => [:show, :all, :update, :updated]
     before_action :ensure_no_primary_locale, :only => [:all, :update, :show, :updated]
 
     def index
@@ -49,11 +49,11 @@ module Tolk
     end
 
     def dump_all
-      if @locale
-        @locale.dump
-      else
-        Tolk::Locale.dump_all
+      translate_results = Tolk::TranslateResult.all
+      translate_results.each do |result|
+        result.dump
       end
+
       I18n.reload!
       redirect_to request.referrer
     end
@@ -93,7 +93,7 @@ module Tolk
     private
 
     def find_locale
-      @locale = Tolk::Locale.where('UPPER(name) = UPPER(?)', params[:id]).first!
+      @locale = Tolk::Locale.where('UPPER(name) = UPPER(?)', params[:id] || params[:tolk_locale]).first!
     end
 
     def locale_params
