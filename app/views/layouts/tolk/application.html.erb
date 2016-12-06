@@ -19,7 +19,7 @@
         <% unless request.path == '/tolk/' %>
           <span class="locale"><%= button_to "Apply Changes", dump_all_locales_path, :method => :post, :class => "apply" %></span>
         <% end %>
-        <span class="locale"><%= button_to "Release", locale_release_path, :method => :post, :class => "apply" %></span>
+        <!-- <span class="locale"><%= button_to "Release", locale_release_path, :method => :post, :class => "apply" %></span> -->
       </h1>
     </div>
     <%= yield %>
