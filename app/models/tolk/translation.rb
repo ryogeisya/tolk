@@ -7,7 +7,7 @@ module Tolk
     serialize :text
     serialize :previous_text
     validate :validate_text_not_nil, :if => proc {|r| r.primary.blank? && !r.explicit_nil && !r.boolean?}
-    validate :check_matching_variables, :if => proc { |tr| tr.primary_translation.present? }
+    #validate :check_matching_variables, :if => proc { |tr| tr.primary_translation.present? }
 
     validates_uniqueness_of :phrase_id, :scope => :locale_id
 
