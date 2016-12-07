@@ -7,6 +7,7 @@ module Tolk
     module ClassMethods
 
       def import_primary
+        Tolk::Phrase.update_all(status: false)
         import_all_dir(self.primary_locale_name)
       end
 
@@ -18,7 +19,7 @@ module Tolk
             l.match(/(.*\.){2,}/) # reject files of type xxx.en.yml
         }
         locales = locales.reject(&locale_block_filter).map {|x| x.split('.').first }
-        # locales = locales - [Tolk::Locale.primary_locale.name]
+        locales = locales - [Tolk::Locale.primary_locale.name]
         locales.each {|l| import_all_dir(l) }
       end
 
@@ -45,7 +46,12 @@ module Tolk
           phrase = phrases.detect {|p| p.key == key} || Tolk::Phrase.create!(:key => key)
 
           if phrase
-            translation = Tolk::Translation.where(phrase: phrase, locale_id: locale.id).first_or_initialize
+            if self.primary_locale_name == locale_name
+              phrase.status = true
+              phrase.save!
+            end
+
+            translation = Tolk::Translation.where(phrase_id: phrase.id, locale_id: locale.id).first_or_initialize
             translation.text = value
             translation.phrase = phrase
             translation.file_path_id = path_model.id

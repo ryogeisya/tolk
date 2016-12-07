@@ -114,7 +114,7 @@ module Tolk
 
     def phrases_without_translation(page = nil)
       # phrases = Tolk::Phrase.all.order('tolk_phrases.key ASC')
-      phrases = Tolk::Phrase.includes(:translations).order('tolk_phrases.key ASC')
+      phrases = Tolk::Phrase.includes(:translations).where(status: true).order('tolk_phrases.key ASC')
 
       existing_ids = self.translations(:select => 'tolk_translations.phrase_id').map(&:phrase_id).uniq
       phrases = phrases.where('tolk_phrases.id NOT IN (?)', existing_ids) if existing_ids.present?
@@ -149,7 +149,7 @@ module Tolk
     def search_phrases_without_translation(query, page = nil)
       return phrases_without_translation(page) unless query.present?
 
-      phrases = Tolk::Phrase.all.order('tolk_phrases.key ASC')
+      phrases = Tolk::Phrase.where(status: true).order('tolk_phrases.key ASC')
 
       found_translations_ids = Tolk::Locale.primary_locale.translations.where(["tolk_translations.text LIKE ?", "%#{query}%"]).to_a.map(&:phrase_id).uniq
       existing_ids = self.translations.select('tolk_translations.phrase_id').to_a.map(&:phrase_id).uniq
@@ -167,7 +167,7 @@ module Tolk
 
     def to_hash(options={})
       to_hash_translations = options[:translations] || translations
-      data = to_hash_translations.includes(:phrase).references(:phrases).order(phrases.arel_table[:key]).
+      data = to_hash_translations.includes(:phrase).references(:phrases).where('tolk_phrases.status = true').order(phrases.arel_table[:key]).
         each_with_object({}) do |translation, locale|
           if translation.phrase.key.include?(".")
             locale.deep_merge!(unsquish(translation.phrase.key, translation.value))
@@ -238,7 +238,7 @@ module Tolk
     end
 
     def find_phrases_with_translations(page, conditions = {})
-      result = Tolk::Phrase.where({ :'tolk_translations.locale_id' => self.id }.merge(conditions)).joins(:translations).order('tolk_phrases.key ASC').public_send(pagination_method, page)
+      result = Tolk::Phrase.where({ :'tolk_translations.locale_id' => self.id }.merge(conditions)).joins(:translations).where(status: true).order('tolk_phrases.key ASC').public_send(pagination_method, page)
 
       result.each do |phrase|
         phrase.translation = phrase.translations.for(self)
