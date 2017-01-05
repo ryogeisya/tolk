@@ -9,6 +9,7 @@ module Tolk
     end
 
     def dump
+      return unless File.exist?("#{destination}/#{name}.yml")
       File.open("#{destination}/#{name}.yml", "w+") do |file|
         file.write(Tolk::YAML.dump(data))
       end
